@@ -641,8 +641,8 @@ Chrome is required for the Selenium-based CoinDesk extraction workflow.
 # 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/Daprogammer/CryptoRadar.git
-cd CryptoRadar
+git clone https://github.com/dimpleseju/Crypto-Currency-Price-Forecaster.git
+cd CryptoRadar-master
 ```
 
 ---
@@ -973,13 +973,6 @@ See the `LICENSE` file for more information.
 
 ---
 
-# 👨‍💻 Author
-
-**Dhairya Amit Shah**
-
-GitHub: @Daprogammer
-
----
 
 <p align="center">
 
