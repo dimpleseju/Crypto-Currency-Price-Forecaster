@@ -13,9 +13,6 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-UI-06B6D4?style=for-the-badge\&logo=tailwindcss\&logoColor=white)
 ![Selenium](https://img.shields.io/badge/Selenium-Web_Scraping-43B02A?style=for-the-badge\&logo=selenium\&logoColor=white)
 ![spaCy](https://img.shields.io/badge/spaCy-NLP-09A3D5?style=for-the-badge)
-### 🤖 Hosted Model
-The trained predictive model is hosted and documented on Hugging Face:
-👉 **[View Crypto Pulse Brain on Hugging Face](https://huggingface.co/DaProgammer/crypto_radar_brain)**
 
 </p>
 
