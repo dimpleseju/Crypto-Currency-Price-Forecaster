@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "accent": "#ffffff",
+                        "gh-bg-dark": "#0d1117",
+                        "gh-card-dark": "#161b22",
+                        "gh-border-dark": "#30363d",
+                        "background-light": "#ffffff",
+                        "border-light": "#e1e4e8",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "6px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100dvh;
+        }
+        input:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.3) !important;
+            border-color: #58a6ff !important;
+        }
+        .dark input {
+            background-color: #0d1117;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-gh-bg-dark text-black dark:text-white transition-colors duration-200">
+    <div class="relative flex h-auto min-h-screen w-full flex-col max-w-6xl mx-auto border-x border-border-light dark:border-gh-border-dark">
+        <div class="sticky top-0 z-50 flex items-center bg-white dark:bg-gh-bg-dark p-6 justify-between border-b border-border-light dark:border-gh-border-dark">
+            <div class="flex size-10 shrink-0 items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gh-card-dark rounded-md transition-colors">
+                <a href="/dashboard"><span class="material-symbols-outlined">arrow_back</span></a>
+            </div>
+            <h1 class="text-xl font-bold uppercase tracking-tighter flex-1 text-center">Settings</h1>
+            <div class="size-10"></div>
+        </div>
+        <form id="update-form" enctype="multipart/form-data">
+            <div class="flex flex-col md:flex-row gap-0 flex-1">
+                <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-border-light dark:border-gh-border-dark p-8 flex flex-col items-center gap-6">
+                    <div class="relative group">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-40 h-40 border-2 border-border-light dark:border-gh-border-dark grayscale-0" style='background-image: url("{{user.profile_pic}}");'>
+                        </div>
+                        <label class="absolute bottom-2 right-2 bg-black dark:bg-gh-card-dark text-white p-3 rounded-full border border-border-light dark:border-gh-border-dark flex items-center justify-center hover:bg-gray-800 dark:hover:bg-gray-700 transition-all shadow-lg" for="pic-upload">
+                            <span class="material-symbols-outlined text-xl">add_a_photo</span>
+                        </label>
+                        <input id="pic-upload" name="profile_picture" type="file" accept="image/png, image/jpeg, image/webp" class="hidden" />
+                    </div>
+                    <div class="flex flex-col items-center text-center">
+                        <p class="text-2xl font-black uppercase italic tracking-tighter">{{user.username}}</p>
+                        <p class="text-sm font-medium opacity-60">{{user.email}}</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col">
+                    <div class="p-8 space-y-8">
+                        <div class="space-y-4">
+                            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Account Info</h3>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase text-gray-500">Username</label>
+                                <input class="w-full bg-white dark:bg-gh-bg-dark border border-border-light dark:border-gh-border-dark h-12 px-4 text-base font-medium rounded-md transition-all" type="text" value="{{user.username}}" name="username" id="username"/>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Security</h3>
+                            <div class="space-y-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black uppercase text-gray-500">Current Password</label>
+                                    <div class="relative">
+                                        <input class="w-full bg-white dark:bg-gh-bg-dark border border-border-light dark:border-gh-border-dark h-12 px-4 pr-12 text-base font-medium rounded-md" id="current-pwd" type="password" name="current-pwd"/>
+                                        <span onclick="togglePassword(this)" class="material-symbols-outlined absolute right-4 top-3 opacity-50 cursor-pointer">visibility</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black uppercase text-gray-500">New Password</label>
+                                        <input class="w-full bg-white dark:bg-gh-bg-dark border border-border-light dark:border-gh-border-dark h-12 px-4 text-base font-medium rounded-md" type="password" name="new_password" id ="new_password"/>
+                                        <ul id="password-feedback" style="list-style-type: none; padding: 0; font-size: 14px;">
+                                            <li id="rule-length" class="text-red-500">❌ At least 8 characters</li>
+                                            <li id="rule-number" class="text-red-500">❌ At least 1 number</li>
+                                            <li id="rule-special" class="text-red-500">❌ At least 1 special character</li>
+                                        </ul>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black uppercase text-gray-500">Confirm</label>
+                                        <input class="w-full bg-white dark:bg-gh-bg-dark border border-border-light dark:border-gh-border-dark h-12 px-4 text-base font-medium rounded-md" type="password" name="confirm_password" id="confirm_password"/>
+
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full h-12 bg-gray-100 dark:bg-gh-card-dark text-black dark:text-white border border-border-light dark:border-gh-border-dark font-black uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-gray-700 transition-all rounded-md" id="submit-btn" disabled style="opacity: 0.5;">Update Credentials</button>
+                            </div>
+                        </div>
+                        <div class="pt-8">
+                            <a href="/logout" class="w-full flex items-center justify-between p-4 border border-red-200 dark:border-red-900/30 bg-red-50/30 dark:bg-red-900/10 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all group rounded-md cursor-pointer block">
+                                <div class="flex items-center gap-3 text-red-600 dark:text-red-400">
+                                    <span class="material-symbols-outlined">logout</span>
+                                    <span class="font-bold uppercase tracking-widest text-xs">Terminate Session</span>
+                                </div>
+                                <span class="material-symbols-outlined text-red-600 dark:text-red-400">close</span>
+                            </a>
+                        </div>
+                            <p class="text-center text-[10px] mt-10 font-bold uppercase tracking-[0.4em] opacity-30">Build v2.5.0 GitHub Dark</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    const currentpwdfield = document.getElementById('current-pwd');
+    const submitbtn = document.getElementById('submit-btn');
+    const updatefrm = document.getElementById('update-form');
+    const lenrule = document.getElementById("rule-length");
+    const numrule = document.getElementById("rule-number");
+    const sprule = document.getElementById("rule-special");
+    const originaluname = document.getElementById('username').value;
+    
+    // --- NEW: THE LIVE PREVIEW & PICTURE TRACKER ---
+    const picUpload = document.getElementById('pic-upload');
+    const profileCircle = document.querySelector('.bg-cover.rounded-full');
+    let pictureChanged = false;
+
+    picUpload.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            pictureChanged = true;
+            // Digital polaroid: update the circle!
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profileCircle.style.backgroundImage = `url('${e.target.result}')`;
+            }
+            reader.readAsDataURL(this.files[0]);
+            
+            // UNLOCK THE BUTTON!
+            submitbtn.disabled = false;
+            submitbtn.style.opacity = 1;
+        }
+    });
+
+    // --- YOUR MASTER VALIDATION ---
+    updatefrm.addEventListener('input', function(e) {
+        const pass = document.getElementById('new_password').value;
+        const lenok = pass.length >= 8;
+        const numok = /[0-9]/.test(pass);
+        const spok = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+        const valid = document.getElementById('confirm_password').value;
+        
+        let isready = false;
+        const changeuname = document.getElementById('username').value.trim();
+        const unamechanged = (changeuname !== originaluname) && (changeuname.length > 0);
+        const passchanged = (valid.length > 0) || (pass.length > 0);
+
+        if(passchanged){
+            const matchok = (valid === pass);
+            if(lenok) { lenrule.classList.replace("text-red-500","text-green-500"); lenrule.innerText = "✅ At least 8 characters"; }
+            else { lenrule.classList.replace("text-green-500","text-red-500"); lenrule.innerText = "❌ At least 8 characters"; }
+
+            if(numok) { numrule.classList.replace("text-red-500","text-green-500"); numrule.innerText = "✅ At least 1 number"; }
+            else { numrule.classList.replace("text-green-500","text-red-500"); numrule.innerText = "❌ At least 1 number"; }
+
+            if(spok) { sprule.classList.replace("text-red-500","text-green-500"); sprule.innerText = "✅ At least 1 special character"; }
+            else { sprule.classList.replace("text-green-500","text-red-500"); sprule.innerText = "❌ At least 1 special character"; }
+
+            if(lenok && numok && spok && matchok){ isready = true; }
+        }
+        else{
+            lenrule.innerText = "❌ At least 8 characters"; lenrule.classList.replace("text-green-500", "text-red-500");
+            numrule.innerText = "❌ At least 1 number"; numrule.classList.replace("text-green-500", "text-red-500");
+            sprule.innerText  = "❌ At least 1 special character"; sprule.classList.replace("text-green-500", "text-red-500");
+            if(unamechanged){ isready = true; }
+        }
+
+        // UNLOCK IF READY *OR* IF THEY PICKED A PICTURE
+        if(isready || pictureChanged){
+            submitbtn.disabled = false;
+            submitbtn.style.opacity = 1;
+        } else {
+            submitbtn.disabled = true;
+            submitbtn.style.opacity = 0.5;
+        }
+    });
+
+    function togglePassword(pwdicon){
+        if(currentpwdfield.type === "password"){
+            currentpwdfield.type = "text";
+            pwdicon.innerText = "visibility_off";
+        } else {
+            currentpwdfield.type = "password";
+            pwdicon.innerText = "visibility";
+        }
+    }
+    
+    updatefrm.addEventListener('submit', async function(e){
+        e.preventDefault(); 
+        
+        const formData = new FormData(this);
+        const newPwd = formData.get('new_password');
+        const confirmPwd = formData.get('confirm_password');
+        
+        if (newPwd !== confirmPwd) {
+            alert("Your new passwords do not match!"); 
+            return; 
+        }
+
+        const originalText = submitbtn.innerText;
+        submitbtn.innerText = "Saving...";
+        submitbtn.disabled = true;
+        submitbtn.style.opacity = 0.5;
+
+        try {
+            const response = await fetch('/profile', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.status === 401) {
+                alert("Incorrect current password.");
+                submitbtn.innerText = originalText;
+                submitbtn.disabled = false;
+                submitbtn.style.opacity = 1;
+            } 
+            else if (response.ok) {
+                alert("Profile updated successfully!");
+                window.location.reload(); 
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Connection failed.");
+            submitbtn.innerText = originalText;
+            submitbtn.disabled = false;
+            submitbtn.style.opacity = 1;
+        }
+    });
+</script>
+</html>

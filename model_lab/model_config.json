@@ -1,0 +1,16 @@
+{
+    "best_threshold": 0.6400000000000001,
+    "expected_accuracy": 0.5357142857142857,
+    "features": [
+        "volume",
+        "dxy_index",
+        "price_change_pct",
+        "sentiment_current",
+        "sentiment_lag_1",
+        "sentiment_lag_2",
+        "sentiment_trend_12h",
+        "rsi",
+        "volatility",
+        "dist_from_sma"
+    ]
+}

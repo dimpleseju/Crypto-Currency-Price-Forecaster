@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Product Dashboard - Crypto Forecast</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "github-bg": "#0d1117",
+                        "github-card": "#161b22",
+                        "github-border": "#30363d",
+                        "github-text-main": "#f0f6fc",
+                        "github-text-secondary": "#8b949e",
+                        "accent-blue": "#58a6ff",
+                        "accent-green": "#3fb950",
+                        "accent-red": "#f85149",
+                        "accent-orange": "#f0883e"
+                    },
+                    fontFamily: { "sans": ["Inter", "sans-serif"] }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base { body { @apply bg-github-bg text-github-text-main font-sans; } }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased overflow-hidden">
+<div class="flex h-screen overflow-hidden">
+    <aside class="w-16 flex flex-col items-center py-6 bg-github-bg border-r border-github-border z-50">
+        <div class="mb-10 text-accent-blue"><span class="material-symbols-outlined text-3xl">auto_graph</span></div>
+        <nav class="flex-1 flex flex-col gap-6">
+            <a class="p-2 rounded-xl text-accent-blue bg-github-card border border-github-border" href="#"><span class="material-symbols-outlined">dashboard</span></a>
+        </nav>
+        <div class="flex flex-col gap-6 mt-auto">
+            <a class="p-2 rounded-xl text-github-text-secondary hover:text-white hover:bg-github-card border border-transparent hover:border-github-border transition-all" href="/profile" title="Profile Settings">
+                <span class="material-symbols-outlined">person</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0 bg-github-bg">
+        <header class="h-16 flex items-center justify-between px-8 border-b border-github-border bg-github-bg/50 backdrop-blur-md">
+            <div class="flex-1 max-w-xl">
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-github-text-secondary">
+                        <span class="material-symbols-outlined text-xl">search</span>
+                    </span>
+                    <form id="search-form" action="/coin-details" method="GET" class="relative group w-full">
+                        <input class="w-full bg-github-card border border-github-border rounded-lg py-2 pl-10 pr-4 text-sm text-github-text-main outline-none" placeholder="Quick search..." type="text" list="coin-suggestions" name="symbol" id="search-input"/>
+                        <datalist id="coin-suggestions">
+                            <option value="btc">Bitcoin</option>
+                            <option value="eth">Ethereum</option>
+                            <option value="sol">Solana</option>
+                            <option value="xrp">Ripple</option>
+                            <option value="doge">Dogecoin</option>
+                        </datalist>
+                    </form>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-github-card border border-github-border px-3 py-1.5 rounded-lg text-xs font-medium text-github-text-secondary">
+                    <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse" id="status-dot"></span>
+                    <span id="status-text">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-8 space-y-8">
+            
+            <section>
+                <div class="flex items-center justify-between mb-6 px-1">
+                    <div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Active Watchlist</h2>
+                        <p class="text-sm text-github-text-secondary">Real-time market data</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="watchlist-grid">
+                    <a href="/coin-details?symbol=btc">
+                        <div class="bg-github-card border border-github-border p-5 rounded-xl hover:border-github-text-secondary/40 transition-all cursor-pointer h-full">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-github-bg flex items-center justify-center border border-github-border">
+                                    <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=025" class="w-6 h-6 grayscale invert brightness-200">
+                                </div>
+                                <span id="badge-BTC" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-github-bg border border-github-border uppercase tracking-wider">...</span>
+                            </div>
+                            <h3 class="text-sm font-medium text-github-text-secondary">Bitcoin</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span id="price-BTC" class="text-2xl font-bold text-white tracking-tight">Loading...</span>
+                            </div>
+                            <div class="flex items-center gap-1 mt-2">
+                                <span id="change-BTC" class="text-xs font-bold flex items-center">--%</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/coin-details?symbol=eth">
+                        <div class="bg-github-card border border-github-border p-5 rounded-xl hover:border-github-text-secondary/40 transition-all cursor-pointer h-full">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-github-bg flex items-center justify-center border border-github-border">
+                                    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=025" class="w-6 h-6 grayscale invert brightness-200">
+                                </div>
+                                <span id="badge-ETH" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-github-bg border border-github-border uppercase tracking-wider">...</span>
+                            </div>
+                            <h3 class="text-sm font-medium text-github-text-secondary">Ethereum</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span id="price-ETH" class="text-2xl font-bold text-white tracking-tight">Loading...</span>
+                            </div>
+                            <div class="flex items-center gap-1 mt-2">
+                                <span id="change-ETH" class="text-xs font-bold flex items-center">--%</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/coin-details?symbol=sol">
+                        <div class="bg-github-card border border-github-border p-5 rounded-xl hover:border-github-text-secondary/40 transition-all cursor-pointer h-full">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-github-bg flex items-center justify-center border border-github-border">
+                                    <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=025" class="w-6 h-6 grayscale invert brightness-200">
+                                </div>
+                                <span id="badge-SOL" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-github-bg border border-github-border uppercase tracking-wider">...</span>
+                            </div>
+                            <h3 class="text-sm font-medium text-github-text-secondary">Solana</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span id="price-SOL" class="text-2xl font-bold text-white tracking-tight">Loading...</span>
+                            </div>
+                            <div class="flex items-center gap-1 mt-2">
+                                <span id="change-SOL" class="text-xs font-bold flex items-center">--%</span>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <a href="/coin-details?symbol=xrp">
+                        <div class="bg-github-card border border-github-border p-5 rounded-xl hover:border-github-text-secondary/40 transition-all cursor-pointer h-full">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-github-bg flex items-center justify-center border border-github-border">
+                                    <img src="https://cryptologos.cc/logos/xrp-xrp-logo.png?v=025" class="w-6 h-6 grayscale invert brightness-200">
+                                </div>
+                                <span id="badge-XRP" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-github-bg border border-github-border uppercase tracking-wider">...</span>
+                            </div>
+                            <h3 class="text-sm font-medium text-github-text-secondary">Ripple</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span id="price-XRP" class="text-2xl font-bold text-white tracking-tight">Loading...</span>
+                            </div>
+                            <div class="flex items-center gap-1 mt-2">
+                                <span id="change-XRP" class="text-xs font-bold flex items-center">--%</span>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <section>
+                        <h2 class="text-sm font-bold text-github-text-secondary uppercase tracking-[0.2em] mb-4">Market Overview</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-github-card border border-github-border rounded-xl p-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <p class="text-sm font-semibold text-github-text-secondary">Market Sentiment</p>
+                                    <span id="sentiment-label" class="px-2 py-1 text-[10px] font-bold bg-github-bg border border-github-border rounded uppercase">...</span>
+                                </div>
+                                <div class="flex items-baseline gap-2 mb-4">
+                                    <span id="sentiment-score" class="text-5xl font-bold text-white tracking-tighter">--</span>
+                                    <span class="text-lg text-github-text-secondary">/ 100</span>
+                                </div>
+                                <div class="h-1.5 w-full bg-github-bg rounded-full overflow-hidden">
+                                    <div id="sentiment-bar" class="h-full bg-gradient-to-r from-accent-orange to-accent-green rounded-full" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-github-card border border-github-border rounded-xl p-6">
+                                <p class="text-sm font-semibold text-github-text-secondary mb-6">BTC Dominance</p>
+                                <div class="flex items-baseline gap-2 mb-2">
+                                    <span class="text-5xl font-bold text-white tracking-tighter">52.4%</span>
+                                </div>
+                                <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-github-border">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-github-text-secondary">Global Volume</span>
+                                        <span class="text-white font-medium" id="global-vol">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-sm font-bold text-github-text-secondary uppercase tracking-[0.2em]">Market Pulse Data-Grid</h2>
+                        </div>
+                        <div class="bg-github-card border border-github-border rounded-xl overflow-hidden shadow-sm">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-github-border bg-github-bg/30">
+                                        <th class="px-6 py-4 text-xs font-bold text-github-text-secondary uppercase tracking-wider">Asset</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-github-text-secondary uppercase tracking-wider">Price</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-github-text-secondary uppercase tracking-wider">24h Change</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-github-text-secondary uppercase tracking-wider">Confidence</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-github-border" id="market-table-body">
+                                    <tr class="text-github-text-secondary text-xs"><td class="px-6 py-4">Loading Data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://127.0.0.1:5000/api/market-overview";
+
+    async function fetchMarketData() {
+        try {
+            document.getElementById('status-text').innerText = "Updating...";
+            
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            
+            if(data.coins) {
+                updateWatchlist(data.coins);
+                updateTable(data.coins);
+            }
+            
+            if(data.global) {
+                updateGlobalStats(data.global);
+            }
+
+            document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-accent-green animate-pulse";
+            document.getElementById('status-text').innerText = "Live";
+            document.getElementById('status-text').className = "text-accent-green";
+
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500";
+            document.getElementById('status-text').innerText = "Offline";
+            document.getElementById('status-text').className = "text-red-500";
+        }
+    }
+
+    function updateWatchlist(coins) {
+        coins.forEach(coin => {
+            const sym = coin.symbol;
+            
+            // Update Price
+            const priceEl = document.getElementById(`price-${sym}`);
+            if(priceEl) priceEl.innerText = "$" + coin.price.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // Update Change
+            const changeEl = document.getElementById(`change-${sym}`);
+            if(changeEl) {
+                const isPos = coin.change >= 0;
+                changeEl.innerText = (isPos ? "+" : "") + coin.change + "%";
+                changeEl.className = `text-xs font-bold flex items-center ${isPos ? 'text-accent-green' : 'text-accent-red'}`;
+            }
+
+            // Update Badge
+            const badgeEl = document.getElementById(`badge-${sym}`);
+            if(badgeEl) {
+                badgeEl.innerText = coin.signal;
+                const color = coin.signal === 'BULLISH' ? 'text-accent-green bg-accent-green/10 border-accent-green/20' : 
+                              coin.signal === 'BEARISH' ? 'text-accent-red bg-accent-red/10 border-accent-red/20' : 
+                              'text-accent-blue bg-accent-blue/10 border-accent-blue/20';
+                badgeEl.className = `text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${color}`;
+            }
+        });
+    }
+
+    function updateGlobalStats(global) {
+        // Sentiment
+        const scoreEl = document.getElementById('sentiment-score');
+        const barEl = document.getElementById('sentiment-bar');
+        const labelEl = document.getElementById('sentiment-label');
+        
+        if(scoreEl) scoreEl.innerText = global.sentiment_score;
+        if(barEl) barEl.style.width = global.sentiment_score + "%";
+        
+        if(labelEl) {
+            labelEl.innerText = global.sentiment_label;
+            labelEl.className = `px-2 py-1 text-[10px] font-bold border rounded uppercase ${global.sentiment_label === 'Greed' ? 'bg-accent-green/10 text-accent-green border-accent-green/20' : 'bg-accent-red/10 text-accent-red border-accent-red/20'}`;
+        }
+
+        document.getElementById('global-vol').innerText = global.global_vol;
+    }
+
+    const searchInput = document.getElementById('search-input');
+const searchForm = document.getElementById('search-form');
+
+    if (searchInput && searchForm) {
+        searchInput.addEventListener('input', function() {
+            const val = this.value.toUpperCase();
+            const options = document.querySelectorAll('#coin-suggestions option');
+            
+            // Loop through the datalist to see if they clicked an exact match
+            for (let option of options) {
+                if (val === option.value.toUpperCase() || val === option.innerText()) {
+                    searchForm.submit(); // Instantly go to the page!
+                    break;
+                }
+            }
+        });
+    }
+
+    function updateTable(coins) {
+        const tbody = document.getElementById('market-table-body');
+        tbody.innerHTML = ""; // Clear current rows
+
+        coins.forEach(coin => {
+            const isPos = coin.change >= 0;
+            const row = `
+            <tr class="data-grid-row hover:bg-github-bg/50 transition-colors cursor-pointer group" onclick="window.location.href='/coin-details?symbol=${coin.symbol.toLowerCase()}'">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-github-bg flex items-center justify-center border border-github-border">
+                            <span class="font-bold text-xs text-github-text-secondary">${coin.symbol[0]}</span>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-white">${coin.symbol}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-sm font-bold text-white">$${coin.price.toLocaleString()}</td>
+                <td class="px-6 py-4 text-sm font-bold ${isPos ? 'text-accent-green' : 'text-accent-red'}">${isPos ? '+' : ''}${coin.change}%</td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 h-1.5 bg-github-bg rounded-full">
+                            <div class="h-full bg-accent-blue rounded-full" style="width: ${coin.confidence}%"></div>
+                        </div>
+                        <span class="text-xs font-medium text-github-text-secondary">${coin.confidence}%</span>
+                    </div>
+                </td>
+            </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Run on load
+    fetchMarketData();
+    setInterval(fetchMarketData, 10000); // Update every 10 seconds
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Signup - CryptoPredict</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2ea44f",
+                        "gh-bg": "#0d1117",
+                        "gh-card": "#161b22",
+                        "gh-border": "#30363d",
+                        "gh-input": "#0d1117",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: { "DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-status-bar {
+            height: env(safe-area-inset-top, 44px);
+        }
+        .ios-home-indicator {
+            height: env(safe-area-inset-bottom, 34px);
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
+            border-color: #58a6ff !important;
+        }
+        .bg-overlay {
+            background: linear-gradient(to right, rgba(13, 17, 23, 0.95), rgba(13, 17, 23, 0.4));
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gh-bg text-[#e6edf3] min-h-screen font-display overflow-hidden">
+<div class="flex flex-col lg:flex-row h-screen w-full">
+<section class="w-full lg:w-[40%] bg-[#161b22] border-r border-gh-border flex flex-col h-full overflow-y-auto z-10">
+<div class="ios-status-bar bg-[#161b22] lg:hidden"></div>
+<header class="flex items-center px-8 py-8 lg:sticky top-0 bg-[#161b22] z-20">
+<div class="flex items-center gap-2">
+<div class="size-8 bg-white rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-[#0d1117] font-bold text-xl">insights</span>
+</div>
+<span class="font-bold text-lg tracking-tight text-white">CryptoPredict</span>
+</div>
+</header>
+<div class="px-8 flex-1 flex flex-col justify-center max-w-md mx-auto w-full lg:max-w-sm py-12">
+<div class="mb-10">
+<h1 class="text-3xl font-bold leading-tight mb-3 text-white">Create Account</h1>
+<p class="text-[#8b949e] text-base">Join the next generation of cryptocurrency market forecasting.</p>
+</div>
+<form class="space-y-5" id="signup-form"> 
+
+    <div class="space-y-1.5">
+        <label class="text-xs font-semibold uppercase tracking-wider text-[#8b949e]">Create A Username</label>
+        <input name="username" id="username" required class="form-input w-full h-11 px-3 rounded-md border-[#30363d] bg-[#0d1117] text-white focus:ring-0 focus:outline-none transition-all placeholder:text-[#484f58] text-sm" placeholder="Satoshi Nakamoto" type="text"/>
+    </div>
+
+    <div class="space-y-1.5">
+        <label class="text-xs font-semibold uppercase tracking-wider text-[#8b949e]">Email Address</label>
+        <input name="email" id="email" required class="form-input w-full h-11 px-3 rounded-md border-[#30363d] bg-[#0d1117] text-white focus:ring-0 focus:outline-none transition-all placeholder:text-[#484f58] text-sm" placeholder="name@example.com" type="email"/>
+    </div>
+
+    <div class="space-y-1.5">
+        <label class="text-xs font-semibold uppercase tracking-wider text-[#8b949e]">Password</label>
+        <input name="password" id="password" required class="form-input w-full h-11 px-3 rounded-md border-[#30363d] bg-[#0d1117] text-white focus:ring-0 focus:outline-none transition-all placeholder:text-[#484f58] text-sm" placeholder="Create a secure password" type="password"/>
+        <ul id="password-feedback" style="list-style-type: none; padding: 0; font-size: 14px;">
+            <li id="rule-length" class="text-red-500">❌ At least 8 characters</li>
+            <li id="rule-number" class="text-red-500">❌ At least 1 number</li>
+            <li id="rule-special" class="text-red-500">❌ At least 1 special character</li>
+        </ul>
+    </div>
+
+    <div id="error-msg" class="hidden p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">error</span>
+        <span id="error-text">Error message here</span>
+    </div>
+
+    <button id="submit-btn" class="w-full h-11 bg-[#238636] hover:bg-[#2ea44f] text-white font-semibold text-sm rounded-md shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-8 border border-[rgba(240,246,252,0.1)]" type="submit" style="opacity: 0.5;" disabled>
+        Create account
+    </button>
+</form>
+<div class="flex items-center gap-4 my-8">
+<div class="h-[1px] flex-1 bg-gh-border"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-[#484f58]">Secure registration</span>
+<div class="h-[1px] flex-1 bg-gh-border"></div>
+</div>
+<div class="text-center">
+<p class="text-[#8b949e] text-sm">
+                        Already have an account? 
+                        <a class="text-[#58a6ff] hover:underline ml-1 font-medium" href="/">Sign in</a>
+</p>
+</div>
+</div>
+<div class="ios-home-indicator lg:hidden"></div>
+</section>
+<section class="hidden lg:flex lg:w-[60%] relative h-full overflow-hidden bg-[#0d1117]">
+<img alt="Futuristic Network Nodes" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmhdMg0DvwKMpzj0jyboDg1Iy7di728j6x-sgCONGh8NTUvOMryCyUDhc8cjfItwAgGQHIYFed-IG5KWjktmXMsLlFhT1BeIbzyc4At0D8ZgsjvguazOaJhC_SZSY-y3hViqbPz4SkYKcdLK-HXnTxIpN4FbAM0cSGrD8EeKejyQwPEUR5JOs6AiR5R_cKeZ4rz3c9s4Pzl6P_9VgENIcISpaATXQ6rm7hVtayyGPEIlel2ENfM8mKz2Bw21Y-vIqCNTG-Y6DZtYo"/>
+<div class="absolute inset-0 bg-[#0d1117]/60 backdrop-blur-[2px]"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-[#0d1117] via-transparent to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-transparent to-transparent"></div>
+<div class="relative z-10 w-full h-full flex flex-col justify-end p-20">
+<div class="max-w-xl">
+<div class="mb-6 flex gap-1">
+<div class="h-1 w-12 bg-primary rounded-full"></div>
+<div class="h-1 w-4 bg-[#30363d] rounded-full"></div>
+<div class="h-1 w-4 bg-[#30363d] rounded-full"></div>
+</div>
+<h2 class="text-4xl font-bold text-white mb-4 leading-tight">Neural Price Forecasting</h2>
+<p class="text-xl text-[#8b949e] leading-relaxed">
+                        Access real-time, AI-driven market sentiment and price trajectory models with institutional-grade accuracy.
+                    </p>
+<div class="mt-12 grid grid-cols-2 gap-8">
+<div>
+<div class="text-white font-bold text-2xl">99.9%</div>
+<div class="text-[#8b949e] text-sm uppercase tracking-wider font-semibold">Uptime</div>
+</div>
+<div>
+<div class="text-white font-bold text-2xl">24/7</div>
+<div class="text-[#8b949e] text-sm uppercase tracking-wider font-semibold">Real-time Analysis</div>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#30363d 1px, transparent 0); background-size: 40px 40px;"></div>
+</section>
+</div>
+
+</body>
+<script>
+    
+    passfield = document.getElementById('password');
+    lenrule = document.getElementById("rule-length");
+    numrule = document.getElementById("rule-number");
+    sprule = document.getElementById("rule-special");
+    submit = document.getElementById("submit-btn");
+    form = document.getElementById("signup-form")
+
+    passfield.addEventListener('input', function()
+    {
+        const pass = this.value
+        const lenok = pass.length >= 8;
+        const numok = /[0-9]/.test(pass);
+        const spok = /[!@#$%^&*(),.?":{}|<>]/.test(pass)
+
+        if(lenok){
+            lenrule.classList.replace("text-red-500","text-green-500")
+            lenrule.innerText = "✅ At least 8 characters"
+        }
+        else{
+            lenrule.classList.replace("text-green-500","text-red-500")
+            lenrule.innerText = "❌ At least 8 characters"
+        }
+
+        if(numok){
+            numrule.classList.replace("text-red-500","text-green-500")
+            numrule.innerText = "✅ At least 1 number"
+        }
+        else{
+            numrule.classList.replace("text-green-500","text-red-500")
+            numrule.innerText = "❌ At least 1 number"
+        }
+
+        if(spok){
+            sprule.classList.replace("text-red-500","text-green-500")
+            sprule.innerText = "✅ At least 1 special character"
+        }
+        else{
+            sprule.classList.replace("text-green-500","text-red-500")
+            sprule.innerText = "❌ At least 1 special character"
+        }
+
+        if(lenok && numok && spok && form.checkValidity()){
+            submit.disabled = false;
+            submit.style.opacity = "1"; 
+        }
+        else{
+            submit.disabled = true;
+            submit.style.opacity = "0.5";
+        }
+
+    })
+
+
+    document.getElementById('signup-form').addEventListener('submit',async function(e)
+    {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        const errorDiv = document.getElementById('error-msg');
+        const errorText = document.getElementById('error-text');
+
+
+        const formData = new FormData(this)
+
+        btn.innerText = "Checking...";
+        btn.disabled = true;
+        errorDiv.classList.add('hidden'); // Hide previous errors
+
+        try {
+            // 2. Send to Backend
+            const response = await fetch('/signup', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.status === 409) {
+                // 3. CASE: EMAIL EXISTS
+                errorText.innerText = result.message; // "This email is already registered."
+                errorDiv.classList.remove('hidden'); // Show error box
+                btn.innerText = "Create account";
+                btn.disabled = false;
+            } 
+            else if (response.ok) {
+                // 4. CASE: SUCCESS
+                window.location.href = "/"; // Redirect to login
+            } 
+            else {
+                // Other errors
+                throw new Error(result.message || "Unknown error");
+            }
+        } catch (error) {
+            console.error(error);
+            errorText.innerText = "Connection failed. Please try again.";
+            errorDiv.classList.remove('hidden');
+            btn.innerText = "Create account";
+            btn.disabled = false;
+        }
+    })
+</script>
+</html>

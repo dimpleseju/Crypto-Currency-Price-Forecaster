@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{symbol}} Analysis - Crypto Forecast</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            safelist: [
+                "text-accent-green", "text-accent-red", "text-accent-orange", "text-accent-blue",
+                "bg-accent-green", "bg-accent-red", "bg-accent-orange", "bg-accent-blue"
+            ],
+            theme: {
+                extend: {
+                    colors: {
+                        "github-bg": "#0d1117",
+                        "github-panel": "#161b22",
+                        "github-border": "#30363d",
+                        "github-text": "#c9d1d9",
+                        "github-text-muted": "#8b949e",
+                        "github-link": "#58a6ff",
+                        "github-btn-hover": "#21262d",
+                        "github-btn-active": "#238636",
+
+                        "accent-green": "#3fb950",
+                        "accent-red": "#f85149",
+                        "accent-orange": "#bc8cff",
+                        "accent-blue": "#58a6ff"
+
+
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "ui-sans-serif", "system-ui"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "6px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            @apply bg-github-bg text-github-text;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 10px;
+        }
+        .github-button {
+            @apply flex items-center justify-center gap-2 px-4 py-2 bg-[#21262d] border border-github-border rounded-md text-github-text text-sm font-semibold transition-all hover:bg-[#30363d] hover:border-[#8b949e] active:bg-[#282e33];
+        }
+        .github-card {
+            @apply bg-github-panel border border-github-border rounded-lg;
+        }
+        .nav-item {
+            @apply flex flex-col items-center justify-center flex-1 text-github-text-muted hover:text-white transition-colors py-2;
+        }
+        .nav-item.active {
+            @apply text-github-link;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-20 lg:pb-0">
+<header class="sticky top-0 z-50 bg-github-bg/80 backdrop-blur-md border-b border-github-border">
+<div class="max-w-[1400px] mx-auto flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<a href = "/dashboard">
+<button class="p-1 hover:bg-github-panel rounded-md transition-colors">
+<span class="material-symbols-outlined block text-github-text">arrow_back_ios_new</span>
+</button>
+</a>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-semibold tracking-wide text-github-text">{{symbol}} / USD</h2>
+<span class="material-symbols-outlined text-base text-github-text-muted">star</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" id="connection-status"></span>
+<span class="text-[10px] font-medium text-github-text-muted uppercase tracking-wider" id="connection-text">Live Analysis</span>
+</div>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-3">
+<nav class="flex bg-github-panel p-1 rounded-md border border-github-border mr-4">
+    
+    <button class="px-3 py-1 text-[11px] font-semibold rounded transition-colors focus:outline-none bg-[#21262d] text-white border border-[#8b949e]/30 shadow-sm" onclick="switchTimeFrame('1D')" id="btn-1d">1D</button>
+    
+    <button class="px-3 py-1 text-[11px] font-semibold rounded transition-colors focus:outline-none text-github-text-muted border border-transparent" onclick="switchTimeFrame('1W')" id="btn-1w">1W</button>
+    
+    <button class="px-3 py-1 text-[11px] font-semibold rounded transition-colors focus:outline-none text-github-text-muted border border-transparent" onclick="switchTimeFrame('1M')" id="btn-1m">1M</button>
+
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-github-panel rounded-md transition-colors text-github-text-muted">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-github-panel rounded-md transition-colors text-github-text-muted md:block hidden">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6">
+<div class="flex flex-col lg:flex-row gap-6">
+<div class="lg:w-[70%] space-y-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<p class="text-[10px] md:text-[11px] font-bold text-github-text-muted uppercase tracking-widest mb-1">Bitcoin Price</p>
+<div class="flex items-center gap-3">
+<h1 class="text-3xl md:text-5xl font-bold tracking-tight text-white" id="live-price">$0.0</h1>
+<div class="flex flex-col" id="price-change-container">
+
+<span class="material-symbols-outlined text-sm md:text-lg mr-0.5" id="change-icon">remove</span>
+<span class="text-green-400 font-bold flex items-center text-sm md:text-lg" id = "price-change"> +0.0%</span>
+<span class="text-github-text-muted text-[10px] uppercase tracking-tighter">24h Change</span>
+</div>
+</div>
+</div>
+<div id="signal-pill" class="self-start md:self-auto bg-[#238636]/10 text-[#2ea44f] border border-[#238636]/40 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+    <span class="w-1.5 h-1.5 rounded-full bg-[#2ea44f]"></span>
+    <span id="signal-text">WAITING...</span>
+</div>
+</div>
+<section class="github-card p-4 md:p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-[10px] font-bold uppercase text-github-text-muted tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">show_chart</span>
+                        Historical Price Data
+                    </h3>
+<div class="flex bg-github-panel p-0.5 rounded border border-github-border md:hidden">
+<button class="px-2 py-1 text-[9px] font-semibold rounded bg-[#21262d] text-white">1D</button>
+<button class="px-2 py-1 text-[9px] font-semibold rounded text-github-text-muted">1W</button>
+</div>
+</div>
+<div class="aspect-[16/9] md:h-[400px] w-full relative">
+<canvas id="priceChart"></canvas>
+</div>
+<div class="flex flex-col md:flex-row md:justify-between mt-6 pt-4 border-t border-github-border gap-4">
+<button class="github-button w-full md:w-auto" onclick="downloadCSV()">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Download CSV
+                    </button>
+</div>
+</section>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="github-card p-4 border border-github-border rounded-lg bg-[#161b22]">
+        <p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest mb-1">Market Cap</p>
+        <p class="text-white font-bold text-lg" id="stat-mcap">Loading...</p>
+    </div>
+    <div class="github-card p-4 border border-github-border rounded-lg bg-[#161b22]">
+        <p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest mb-1">24h Volume</p>
+        <p class="text-white font-bold text-lg" id="stat-volume">Loading...</p>
+    </div>
+    <div class="github-card p-4 border border-github-border rounded-lg bg-[#161b22]">
+        <p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest mb-1">Circulating Supply</p>
+        <p class="text-white font-bold text-lg" id="stat-supply">Loading...</p>
+    </div>
+    <div class="github-card p-4 border border-github-border rounded-lg bg-[#161b22]">
+        <p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest mb-1">Sentiment Score</p>
+        <p class="text-white font-bold text-lg" id="stat-score">--</p>
+    </div>
+</div>
+</div>
+<div class="lg:w-[30%] flex flex-col gap-6">
+<div class="github-card p-5 md:p-6 mt-6">
+    <!-- FIX: This flex container keeps the text on the right side! -->
+    <div class="flex justify-between items-center mb-4">
+        <p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest">AI Target Forecast</p>
+    </div>
+
+    <div class="flex justify-between items-center mb-2">
+        <span class="text-xs text-github-text-muted">Target (4h):</span>
+        <span class="text-xl font-bold text-white" id="ai-target">--</span>
+    </div>
+
+    <div class="flex justify-between items-center border-t border-github-border pt-2 mt-2">
+        <span class="text-xs text-github-text-muted">Model Accuracy:</span>
+        <span class="text-xs font-bold text-accent-blue" id="ai-accuracy">--%</span>
+    </div>
+    <div class="flex justify-between items-center border-t border-github-border pt-2.5 mt-2.5">
+        <span class="text-xs text-github-text-muted">Trend Bias:</span>
+        <span id="forecast-text-only" class="text-xs font-bold uppercase tracking-wider text-github-text-muted">WAITING...</span>
+    </div>
+</div>
+<div class="github-card p-5 md:p-6 flex-1">
+<p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest mb-4">AI Confidence</p>
+<div class="flex items-baseline justify-between mb-2">
+<span class="text-3xl md:text-4xl font-bold text-white" id="ai-confidence">0.0%</span>
+<span class="text-green-400 text-[10px] font-bold px-2 py-0.5 bg-green-400/10 rounded uppercase">High</span>
+</div>
+<div class="w-full bg-[#30363d] h-2 rounded-full mt-4 overflow-hidden">
+<div class="bg-white h-full w-[0%]" id="conf-bar"></div>
+</div>
+<p class="mt-4 text-[11px] md:text-xs text-github-text-muted leading-relaxed">
+                    Machine learning models indicate a high degree of certainty for the current short-term trend based on historical patterns.
+                </p>
+</div>
+<div class="github-card p-5 md:p-6 flex-1">
+<p class="text-[10px] font-bold text-github-text-muted uppercase tracking-widest mb-4">Market Volatility</p>
+<div class="flex items-baseline justify-between mb-2">
+<span class="text-3xl md:text-4xl font-bold text-white" id="vol-level-text">...</span>
+<span class="text-github-text-muted text-[10px] font-bold uppercase">Stable Range</span>
+</div>
+<div class="flex gap-2 mt-4" id="vol-bars-container">
+<div class="h-2 flex-1 rounded-full bg-white"></div>
+<div class="h-2 flex-1 rounded-full bg-white"></div>
+<div class="h-2 flex-1 rounded-full bg-[#30363d]"></div>
+<div class="h-2 flex-1 rounded-full bg-[#30363d]"></div>
+</div>
+<div class="mt-6 flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-github-text-muted">
+<span>Low</span>
+<span>Med</span>
+<span>High</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row gap-6">
+<section class="lg:w-[60%] w-full">
+<div class="overflow-x-auto custom-scrollbar">
+
+</div>
+</div>
+</section>
+<section class="lg:w-[40%] w-full flex flex-col">
+<div class="mb-4 px-1">
+<h3 class="text-[10px] font-bold uppercase tracking-widest text-github-text-muted">Protocol Insights</h3>
+</div>
+<div class="github-card p-5 bg-[#161b22]/50">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-github-text-muted text-sm">terminal</span>
+<h4 class="font-bold text-xs tracking-tight text-white uppercase">Market Protocol Output</h4>
+</div>
+<div class="p-4 bg-github-bg rounded border border-github-border font-mono text-[11px] leading-relaxed">
+<p class="text-github-text-muted mb-2"><span class="text-[#58a6ff]"># protocol_analysis</span> --v2.4</p>
+<p class="text-white" id="protocol-text">Analyzing market depth...</p>
+<p class="text-white">Strong support at <span class="text-green-400" id="protocol-support">Loading...</span>. Net exchange flows remain negative.</p>
+<div class="mt-4 pt-4 border-t border-github-border/50 space-y-1">
+<p class="flex justify-between">
+<span class="text-github-text-muted">Sentiment:</span>
+<span class="text-[#ffab70]" id="protocol-sentiment">Loading...</span>
+</p>
+<p class="flex justify-between">
+<span class="text-github-text-muted">RSI Level:</span>
+<span class="text-white" id="protocol-rsi">--</span>
+</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-[60] bg-github-bg border-t border-github-border md:hidden flex items-center justify-around h-16">
+<a class="nav-item active" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-[10px] font-medium mt-0.5">Analysis</span>
+</a>
+<a class="nav-item" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-medium mt-0.5">Explore</span>
+</a>
+<a class="nav-item" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-[10px] font-medium mt-0.5">History</span>
+</a>
+<a class="nav-item" href="#">
+<span class="material-symbols-outlined">person_outline</span>
+<span class="text-[10px] font-medium mt-0.5">Account</span>
+</a>
+</nav>
+<script>
+const API_URL = "http://127.0.0.1:5000/api/dashboard";
+    let currentTimeFrame="1D";
+    let cryptoChart = null;
+    const currentSymbol = "{{symbol}}"
+
+// Add this variable at the very top of your script if you haven't yet!
+    let dashboardTimer; 
+
+    function switchTimeFrame(period) {
+        currentTimeFrame = period; // Update global variable
+
+        const btn1d = document.getElementById('btn-1d');
+        const btn1w = document.getElementById('btn-1w');
+        const btn1m = document.getElementById('btn-1m');
+        
+        const activeClass = "bg-[#21262d] text-white border border-[#8b949e]/30 shadow-sm";
+        const inactiveClass = "text-github-text-muted hover:text-white border border-transparent";
+        
+        // FIXED: Swapped 'transition-all' to 'transition-colors' to stop the border twitching
+        // FIXED: Added 'focus:outline-none' to stop the browser click-ring
+        const baseClass = "px-3 py-1 text-[11px] font-semibold rounded transition-colors focus:outline-none ";
+
+        if (period === '1D') {
+            btn1d.className = baseClass + activeClass;
+            btn1w.className = baseClass + inactiveClass;
+            btn1m.className = baseClass + inactiveClass;
+        } else if(period === '1M'){
+            btn1d.className = baseClass + inactiveClass;
+            btn1w.className = baseClass + inactiveClass;
+            btn1m.className = baseClass + activeClass;
+        } else {
+            btn1d.className = baseClass + inactiveClass;
+            btn1w.className = baseClass + activeClass;
+            btn1m.className = baseClass + inactiveClass;
+        }
+
+        // FIXED THE LAG: Destroy the old background timer, fetch the data, and start a fresh timer!
+        if (dashboardTimer) clearInterval(dashboardTimer); 
+        updateDashboard();
+        dashboardTimer = setInterval(updateDashboard, 5000);
+    }
+
+    // Add this function to your existing <script>
+    function downloadCSV() {
+        // 1. Construct the URL using your existing global variables
+        const urlcsv = `http://127.0.0.1:5000/api/export-csv?symbol=${currentSymbol}&period=${currentTimeFrame}`;
+
+        // 2. Trigger the download immediately
+        window.location.href = urlcsv;
+    }
+
+    async function updateDashboard() {
+        try {
+            console.log("fetching data...")
+            const response = await fetch(`${API_URL}?period=${currentTimeFrame}&symbol=${currentSymbol}`);
+            
+            if (!response.ok) throw new Error("API Error");
+
+            const data = await response.json();
+            console.log("data recieved",data)
+            
+            // 1. UPDATE STATUS
+            document.getElementById('connection-status').className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+            document.getElementById('connection-text').className = "text-xs font-bold text-green-400";
+            document.getElementById('connection-text').innerText = "SYSTEM ONLINE";
+
+            // 2. UPDATE CHART
+            const chartData = data.chart;
+            if (chartData.prices && chartData.prices.length > 0) {
+                document.getElementById('live-price').innerText = "$" + chartData.current_price.toLocaleString(undefined, {minimumFractionDigits: 2});
+                
+                if (cryptoChart) {
+                    cryptoChart.data.labels = chartData.labels;
+                    cryptoChart.data.datasets[0].data = chartData.prices;
+                    cryptoChart.update();
+                }
+            }
+
+            // 3. UPDATE AI
+            // 3. UPDATE AI (FIXED)
+            const aiData = data.ai;
+            
+            // Update Confidence Text & Bar
+            const confEl = document.getElementById('ai-confidence');
+            const barEl = document.getElementById('conf-bar');
+            if (confEl) confEl.innerText = aiData.confidence + "%";
+            if (barEl) barEl.style.width = aiData.confidence + "%";
+
+            // Update Signal Badge (The Pill)
+            // Update Signal Badge (The Pill) and Forecast Text
+            const pillEl = document.getElementById('signal-pill');
+            const textEl = document.getElementById('signal-text');
+            const forecastTextEl = document.getElementById('forecast-text-only');
+
+            if (pillEl && textEl && aiData.direction) {
+
+                // 1. Inject the text into both elements
+                if (forecastTextEl) forecastTextEl.innerText = aiData.direction;
+                textEl.innerText = aiData.direction + " SIGNAL";
+
+                // 2. Apply Colors based on Bullish / Bearish / Neutral
+                if (aiData.direction === 'BULLISH') {
+                    // Green Styling for Pill
+                    pillEl.className = "self-start md:self-auto bg-[#238636]/10 text-[#2ea44f] border border-[#238636]/40 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2";
+                    if(pillEl.firstElementChild) pillEl.firstElementChild.className = "w-1.5 h-1.5 rounded-full bg-[#2ea44f]";
+
+                    // Green Styling for Open Text
+                    if (forecastTextEl) forecastTextEl.className = "text-sm font-bold uppercase tracking-wide text-accent-green";
+                }
+                else if (aiData.direction === 'BEARISH') {
+                    // Red Styling for Pill
+                    pillEl.className = "self-start md:self-auto bg-red-500/10 text-red-500 border border-red-500/40 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2";
+                    if(pillEl.firstElementChild) pillEl.firstElementChild.className = "w-1.5 h-1.5 rounded-full bg-red-500";
+
+                    // Red Styling for Open Text
+                    if (forecastTextEl) forecastTextEl.className = "text-sm font-bold uppercase tracking-wide text-accent-red";
+                }
+                else {
+                    // Neutral Styling for Pill (Gray)
+                    pillEl.className = "self-start md:self-auto bg-gray-500/10 text-gray-400 border border-gray-500/40 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2";
+                    if(pillEl.firstElementChild) pillEl.firstElementChild.className = "w-1.5 h-1.5 rounded-full bg-gray-400";
+
+                    // Neutral Styling for Open Text
+                    if (forecastTextEl) forecastTextEl.className = "text-sm font-bold uppercase tracking-wide text-github-text-muted";
+                }
+
+                // 3. Update Target Price values and colors
+                if (aiData.target_price) {
+                    document.getElementById('ai-target').innerText = "$" + aiData.target_price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('ai-accuracy').innerText = aiData.accuracy + "% (Historical)";
+
+                    const targetEl = document.getElementById('ai-target');
+                    if (aiData.direction === 'BULLISH') targetEl.className = "text-xl font-bold text-accent-green";
+                    else if (aiData.direction === 'BEARISH') targetEl.className = "text-xl font-bold text-accent-red";
+                    else targetEl.className = "text-xl font-bold text-github-text-muted";
+                }
+            }
+
+            // --- 4. UPDATE PROTOCOL INSIGHTS ---
+            if(data.protocol){
+                document.getElementById('protocol-rsi').innerText = data.protocol.rsi;
+                document.getElementById('protocol-support').innerText = "$" + data.protocol.support.toLocaleString();
+                document.getElementById('protocol-text').innerText = data.protocol.text;
+                // Update Volatility Text
+                const volText = document.getElementById('vol-level-text');
+                volText.innerText = data.protocol.volatility; // LOW / MED / HIGH
+                
+                // Update Volatility Bars (Visual Logic)
+                const barsContainer = document.getElementById('vol-bars-container');
+                const bars = barsContainer.children; // Get the 4 div bars
+                
+                // Reset all to dark gray
+                for(let bar of bars) bar.className = "h-2 flex-1 rounded-full bg-[#30363d]";
+                
+                // Light them up based on level
+                if (data.protocol.volatility === 'LOW') {
+                    bars[0].className = "h-2 flex-1 rounded-full bg-white";
+                    bars[1].className = "h-2 flex-1 rounded-full bg-white";
+                } 
+                else if (data.protocol.volatility === 'MED') {
+                    bars[0].className = "h-2 flex-1 rounded-full bg-white";
+                    bars[1].className = "h-2 flex-1 rounded-full bg-white";
+                    bars[2].className = "h-2 flex-1 rounded-full bg-white";
+                } 
+                else if (data.protocol.volatility === 'HIGH') {
+                    // All white/red for high volatility
+                    for(let bar of bars) bar.className = "h-2 flex-1 rounded-full bg-accent-red";
+                    volText.className = "text-3xl md:text-4xl font-bold text-accent-red"; // Make text red too
+                }
+
+            }
+
+            // update sentiments
+            const sentEl = document.getElementById("protocol-sentiment")
+
+            if (sentEl)
+            {
+                sentEl.innerText = `${data.sentiment.label} (${data.sentiment.score})`
+                sentEl.className = `${data.sentiment.color} font-bold`
+            }
+
+            // update price change
+            const changeEl = document.getElementById('price-change');
+            const containerEl = document.getElementById('price-change-container');
+            const iconEl = document.getElementById('change-icon');
+
+        if (changeEl && containerEl && iconEl && data.change_24 !== undefined) {
+            const change = data.change_24;
+            const absChange = Math.abs(change);
+        
+        // Update Text
+        changeEl.innerText = (change >= 0 ? "+" : "-") + absChange + "%";
+        
+        // Update Colors & Icon
+        if (change > 0) {
+            // GREEN (Bullish)
+            containerEl.className = "text-accent-green font-bold flex items-center text-sm md:text-lg";
+            iconEl.innerText = "trending_up";
+        } else if (change < 0) {
+            // RED (Bearish)
+            containerEl.className = "text-accent-red font-bold flex items-center text-sm md:text-lg";
+            iconEl.innerText = "trending_down";
+        } else {
+            // GRAY (Neutral)
+            containerEl.className = "text-github-text-muted font-bold flex items-center text-sm md:text-lg";
+            iconEl.innerText = "remove";
+        }
+
+        // --- added technical parameters ---
+        if (data.stats) {
+    // Helper function to format big numbers (e.g., 1.2T, 45B)
+        const formatBigNum = (num) => {
+            if (num >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + "T";
+            if (num >= 1.0e+9) return "$" + (num / 1.0e+9).toFixed(2) + "B";
+            if (num >= 1.0e+6) return "$" + (num / 1.0e+6).toFixed(2) + "M";
+            return "$" + num.toLocaleString();
+        };
+
+        document.getElementById('stat-mcap').innerText = formatBigNum(data.stats.market_cap);
+        document.getElementById('stat-volume').innerText = formatBigNum(data.stats.volume);
+        
+        // Format Supply (Just numbers, no $)
+        const supply = data.stats.supply;
+        if (supply > 1.0e+6) {
+            document.getElementById('stat-supply').innerText = (supply / 1.0e+6).toFixed(1) + "M " + currentSymbol.toUpperCase();
+        } else {
+            document.getElementById('stat-supply').innerText = supply.toLocaleString() + " " + currentSymbol.toUpperCase();
+        }
+    }
+
+// Update Sentiment Score Card (using existing sentiment data)
+    if (data.sentiment) {
+        const scoreEl = document.getElementById('stat-score');
+        scoreEl.innerText = data.sentiment.score + "/100";
+        scoreEl.className = `text-lg font-bold ${data.sentiment.color.replace('text-', 'text-')}`; // Reuse your color logic
+    }
+    }
+
+
+
+        } catch (error) {
+            console.error("Dashboard Sync Error:", error);
+            document.getElementById('connection-status').className = "w-2 h-2 rounded-full bg-red-500";
+            document.getElementById('connection-text').className = "text-xs font-bold text-red-400";
+            document.getElementById('connection-text').innerText = "DISCONNECTED";
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(46, 164, 79, 0.2)');
+        gradient.addColorStop(1, 'rgba(13, 17, 23, 0)');
+
+        cryptoChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: '{{symbol}}', data: [], borderColor: '#2ea44f', borderWidth: 2, fill: true, backgroundColor: gradient }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: true,
+        grid: { display: false }, // Hide vertical grid lines for cleaner look
+        ticks: {
+            color: '#8b949e', // Match your gray text theme
+            font: { size: 9, family: 'Inter' },
+            maxTicksLimit: 6, // Limit labels so they don't overlap
+            maxRotation: 0
+        } }, y: { display: true, position: 'right', grid: { color: '#30363d' } } } }
+        });
+
+        updateDashboard();
+        setInterval(updateDashboard, 5000);
+    });
+</script>
+
+</body></html>
